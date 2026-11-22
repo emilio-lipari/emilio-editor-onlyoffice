@@ -1,0 +1,147 @@
+{
+  "_nota": "Regole di scripts/onlyoffice-editor-pack.py (PPT-02, WV-PPT-02-01-01), scritte il 2026-11-08 sul sito vero dell'immagine ghcr.io/ranuts/document@sha256:5e71d767e15d3c7b056eb7bf75f6f1fedf389095cd463de442c01d384d29336b (cartella /public, servita da static-web-server). 'togli': ogni voce deve togliere almeno un file. 'sostituzioni': il testo deve comparire esattamente una volta nei file indicati. Un'immagine diversa richiede di rivederle. 'decomprimi_gzip': il file deve esserci, essere gzip e, decompresso, cominciare con 'inizio' (esadecimale).",
+  "togli": [
+    {
+      "glob": "assets/wllama-*.wasm",
+      "motivo": "pesi del motore di AI locale wllama (~42 MB): Emilio usa i suoi modelli; i moduli JS restano, li importa agent-plugin"
+    },
+    {
+      "glob": "assets/webllm.worker-*",
+      "motivo": "worker di WebLLM, altra AI locale"
+    },
+    {
+      "glob": "sdkjs/visio/**",
+      "motivo": "motore Visio: fuori perimetro"
+    },
+    {
+      "glob": "web-apps/apps/visioeditor/**",
+      "motivo": "editor Visio: fuori perimetro"
+    },
+    {
+      "glob": "ja/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "ko/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "es/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "de/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "pt/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "zh-CN/**",
+      "motivo": "pagine del sito tradotte"
+    },
+    {
+      "glob": "help/**",
+      "motivo": "pagine del sito"
+    },
+    {
+      "glob": "about.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "ai-document-assistant.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "changelog.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "contact.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "edit-documents-without-account.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "embed-demo.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "embed-document-editor.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "help.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "no-signup-document-editor.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "offline-document-editor.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "onlyoffice-online-free.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "private-document-editor.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "webmcp-document-editor.html",
+      "motivo": "pagina del sito"
+    },
+    {
+      "glob": "_headers",
+      "motivo": "configurazione Cloudflare e file per i motori di ricerca, con l'Origin-Trial WebMCP del loro dominio"
+    },
+    {
+      "glob": "_redirects",
+      "motivo": "configurazione Cloudflare e file per i motori di ricerca, con l'Origin-Trial WebMCP del loro dominio"
+    },
+    {
+      "glob": "llms.txt",
+      "motivo": "file per i motori di ricerca"
+    },
+    {
+      "glob": "llms-full.txt",
+      "motivo": "file per i motori di ricerca"
+    },
+    {
+      "glob": "sitemap.xml",
+      "motivo": "file per i motori di ricerca"
+    },
+    {
+      "glob": "robots.txt",
+      "motivo": "file per i motori di ricerca"
+    }
+  ],
+  "sostituzioni": [
+    {
+      "file": "assets/document-*.js",
+      "vecchio": "&&/^\\/editor(?:\\.html)?\\/?$/.test(location.pathname)&&await Te()",
+      "nuovo": "&&!1",
+      "motivo": "niente attesa di 15 s del service worker (Te): dietro il protocollo emilio-editor il service worker non c'è, l'editor parte senza isolamento come nello spike"
+    },
+    {
+      "file": "sdkjs/slide/sdk-all.js",
+      "vecchio": "e.prototype.checkColor=r.AscBrowser.isMozilla&&r.AscBrowser.isLinuxOS?e.prototype.checkColorMozillaLinux:e.prototype.checkColorNormal;",
+      "nuovo": "e.prototype.checkColorWebKitLinux=function(x,v,y,M,Q){if(null==this.m_oCanvas){this.checkColorNormal(x,v,y,M,Q);return}if(x!=this.R||v!=this.G||y!=this.B){this.R=x;this.G=v;this.B=y;var c=document.createElement(\"canvas\");c.width=this.m_oCanvas.width;c.height=this.m_oCanvas.height;var k=r.AscBrowser.getContext2D(c);var d=this.m_oContext.getImageData(0,0,c.width,c.height),p=d.data;for(var i=0;i<p.length;i+=4)p[i]=x,p[i+1]=v,p[i+2]=y;k.putImageData(d,0,0);k.globalCompositeOperation=\"source-in\";this.m_oCanvas=c;this.m_oContext=k}};e.prototype.checkColor=r.AscBrowser.isSafari&&r.AscBrowser.isLinuxOS?e.prototype.checkColorWebKitLinux:r.AscBrowser.isMozilla&&r.AscBrowser.isLinuxOS?e.prototype.checkColorMozillaLinux:e.prototype.checkColorNormal;",
+      "motivo": "su WebKitGTK (Linux) ricolorare una lettera col fillRect 'source-in' sul suo canvas non ha effetto dopo il primo disegno e la lettera resta del colore di prima (prova dal vivo del 2026-11-10: lettere bianche su fondo bianco; in Chrome, stesso pacchetto, colori giusti). Su WebKit Linux il cambio di colore costruisce un canvas nuovo con i pixel ricolorati (getImageData/putImageData); gli altri motori restano come prima"
+    }
+  ],
+  "togli_origin_trial": true,
+  "decomprimi_gzip": [
+    {
+      "file": "sdkjs/common/wasm/x2t/x2t.wasm.br",
+      "inizio": "0061736d",
+      "motivo": "il convertitore x2t è salvato in gzip e il server dell'immagine lo manda con Content-Encoding: gzip (commento in x2t_helper.js: «nothing here decompresses anything»); il protocollo emilio-editor serve i byte come sono, quindi il file va in chiaro, con lo stesso nome che l'editor chiede (prova dal vivo del 2026-11-10: presentazione ferma su «Caricamento»)"
+    }
+  ]
+}
